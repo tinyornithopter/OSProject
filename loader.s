@@ -9,10 +9,14 @@
 
 .section .text
 .extern kernelMain; #Here I tell the assembler that there is going to be a function called kernalmain (in kernel.cpp) we tell the assembler that the linker will take care of it
+.extern callConstructors
 .global loader
 
 loader:
 	mov $kernel_stack, %esp; #set the stack pointer to some pointer to some stack; esp stands for 32 bit stack pointer
+	
+	call callConstructors
+
 	push %eax ; #Bootloader creates a structure and creates a pointer to the structure in the Ax register; quick note 16 bit register have ax and bx while 32 bit registers denote it as eax and ebx registers
 	push %ebx ; #It copies the magic number to the Bx register
 	call kernelMain; # currently it should be in an infinite loop because of the while(true) function since we do not want to the kernel's processes to stop
